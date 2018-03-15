@@ -29,7 +29,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.bq.gpu_to_cpu_unsupported=1 \
 	ro.opengles.version=196609 \
-	ro.sf.lcd_density=560 \
+	ro.sf.lcd_density=640 \
 	debug.hwc.force_gpu=1 \
 	debug.hwui.use_buffer_age=false
 
