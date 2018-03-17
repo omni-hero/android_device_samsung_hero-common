@@ -67,7 +67,8 @@ TARGET_SCREEN_WIDTH := 1440
 ###########################################################
 
 PRODUCT_PACKAGES += \
-	android.hardware.power@1.0-service.hero
+	power.exynos5 \
+	android.hardware.power@1.0-impl
 
 ###########################################################
 ### CHARGER
