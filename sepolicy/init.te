@@ -37,3 +37,4 @@ allow init su:process { transition rlimitinh siginh noatsecure };
 
 # RIL
 allow init socket_device:sock_file { create open read write getattr setattr };
+allow init { domain -lmkd -crash_dump }:process noatsecure;
