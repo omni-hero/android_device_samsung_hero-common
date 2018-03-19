@@ -4,3 +4,6 @@ import /efs/factory.prop
 # boot device
 ro.boot.bootdevice=155a0000.ufs
 
+# Camera hal1 override 
+camera.hal1.packagelist=com.google.android.talk,com.instagram.android,com.tencent.mm,com.whatsapp
+
