@@ -137,6 +137,12 @@ on post-fs-data
     chown system system /data/privatemode
     restorecon /data/privatemode
 
+# Vibrator
+    chmod 755 /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/timed_output/vibrator/enable
+    chmod 755 /sys/class/timed_output/vibrator/intensity
+    chown system system /sys/class/timed_output/vibrator/intensity
+
 on boot
     # override init.rc to keep plenty of large order chunks around
     # to improve allocation times
@@ -747,3 +753,9 @@ service cameraserver /system/bin/cameraserver
     group media_rw audio camera drmrpc inet shell sdcard_r system
     ioprio rt 4
     writepid /dev/cpuset/foreground/tasks
+
+# Vibrator
+service vibrator-1-0 /vendor/bin/hw/android.hardware.vibrator@1.0-service.hero
+    class hal
+    user system
+    group system

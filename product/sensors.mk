@@ -16,9 +16,11 @@
 
 # Sensorhub
 PRODUCT_PACKAGES += \
-	android.hardware.sensors@1.0-impl \
-	android.hardware.vibrator@1.0-impl \
-	android.hardware.vibrator@1.0-service
+	android.hardware.sensors@1.0-impl
+
+# Vibrator
+PRODUCT_PACKAGES += \
+	android.hardware.vibrator@1.0-service.hero
 
 # Permissions
 PRODUCT_COPY_FILES += \
@@ -31,4 +33,3 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
 	frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:system/etc/permissions/android.hardware.sensor.stepcounter.xml \
 	frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:system/etc/permissions/android.hardware.sensor.stepdetector.xml
-
