@@ -88,7 +88,8 @@ PRODUCT_PACKAGES += \
 	libsamsung_symbols \
 	SamsungServiceMode \
 	Torch \
-        DeviceParts
+        DeviceParts \
+	HeroParts
 
 # Filesystem tools for resizing system partition filesystem
 PRODUCT_PACKAGES += \
