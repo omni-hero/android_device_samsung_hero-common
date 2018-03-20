@@ -52,7 +52,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # sdcardfs
 PRODUCT_PROPERTY_OVERRIDES += \
-	ro.sys.sdcardfs=true
+	ro.sys.sdcardfs=false
 
 # USB
 PRODUCT_PROPERTY_OVERRIDES += \
