@@ -98,9 +98,6 @@
 /sys/devices/[0-9]*.decon_fb/lcd/panel/mdnie/mode       u:object_r:sysfs_mdnie_writable:s0
 /sys/devices/[0-9]*.decon_fb/lcd/panel/mdnie/scenario   u:object_r:sysfs_mdnie_writable:s0
 
-# Vibrator
-/(vendor|system/vendor)/bin/hw/android\.hardware\.vibrator@1\.0-service.zero     u:object_r:hal_vibrator_default_exec:s0
-
 ####################################
 # deamons
 #
