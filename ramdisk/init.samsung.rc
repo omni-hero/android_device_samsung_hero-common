@@ -132,13 +132,13 @@ on init
     write /dev/cpuset/top-app/cpus 0-7
     write /dev/cpuset/top-app/mems 0
     mkdir /dev/cpuset/foreground
-    write /dev/cpuset/foreground/cpus 0-2,4-7
+    write /dev/cpuset/foreground/cpus 0-3,4-7
     write /dev/cpuset/foreground/mems 0
     mkdir /dev/cpuset/foreground/boost
     write /dev/cpuset/foreground/boost/cpus 4-7
     write /dev/cpuset/foreground/boost/mems 0
     mkdir /dev/cpuset/background
-    write /dev/cpuset/background/cpus 0-1
+    write /dev/cpuset/background/cpus 0-3,4-7
     write /dev/cpuset/background/mems 0
     mkdir /dev/cpuset/cached
     write /dev/cpuset/cached/cpus 1
@@ -147,8 +147,9 @@ on init
     write /dev/cpuset/abnormal/cpus 1
     write /dev/cpuset/abnormal/mems 0
     mkdir /dev/cpuset/dex2oat
-    write /dev/cpuset/dex2oat/cpus 0-2,4-7
+    write /dev/cpuset/dex2oat/cpus 0-3,4-7
     write /dev/cpuset/dex2oat/mems 0
+    write /dev/cpuset/system-background/cpus 0-3,4-7 
 
     # system-background is for system tasks that should only run on
     # little cores, not on bigs
@@ -413,6 +414,10 @@ on boot
 
     chown radio system /sys/devices/system/cpu/kernel_max
     chmod 0664 /sys/devices/system/cpu/kernel_max
+
+    # Bring back main cores CPU 7,8
+    write /sys/devices/system/cpu/cpu6/online 1
+    write /sys/devices/system/cpu/cpu7/online 1
 
  # permission for CHARGING
    mkdir /efs/Battery 0775 radio system

@@ -137,12 +137,6 @@ on post-fs-data
     chown system system /data/privatemode
     restorecon /data/privatemode
 
-# Vibrator
-    chmod 755 /sys/class/timed_output/vibrator/enable
-    chown system system /sys/class/timed_output/vibrator/enable
-    chmod 755 /sys/class/timed_output/vibrator/intensity
-    chown system system /sys/class/timed_output/vibrator/intensity
-
 on boot
     # override init.rc to keep plenty of large order chunks around
     # to improve allocation times
@@ -151,6 +145,12 @@ on boot
     write /sys/module/selinux/parameters/selinux_fakemode 0
     setenforce 0
     write /sys/fs/selinux/enforce 0
+
+# Vibrator
+    chown system system /sys/class/timed_output/vibrator/enable
+    chmod 0664 /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/timed_output/vibrator/intensity
+    chmod 0664 /sys/class/timed_output/vibrator/intensity
 
 # SSWAP
     write /proc/sys/vm/swappiness 190
