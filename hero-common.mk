@@ -88,8 +88,9 @@ PRODUCT_PACKAGES += \
 	libsamsung_symbols \
 	SamsungServiceMode \
 	Torch \
-        DeviceParts \
-	HeroParts
+    DeviceParts \
+	HeroParts \
+    textclassifier.smartselection.bundle1
 
 # Filesystem tools for resizing system partition filesystem
 PRODUCT_PACKAGES += \
