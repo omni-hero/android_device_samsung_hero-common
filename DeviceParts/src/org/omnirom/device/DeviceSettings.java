@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2016 The OmniROM Project
+* Copyright (C) 2017 The OmniROM Project
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -17,206 +17,94 @@
 */
 package org.omnirom.device;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.res.Resources;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v14.preference.PreferenceFragment;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
-import android.support.v7.preference.PreferenceScreen;
-import android.support.v7.preference.TwoStatePreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.util.Log;
 
-public class DeviceSettings extends PreferenceFragment implements
+public class DeviceSettings extends PreferenceActivity implements
         Preference.OnPreferenceChangeListener {
 
-    public static final String KEY_VIBSTRENGTH = "vib_strength";
-
-    private static final String KEY_SLIDER_MODE_TOP = "slider_mode_top";
-    private static final String KEY_SLIDER_MODE_CENTER = "slider_mode_center";
-    private static final String KEY_SLIDER_MODE_BOTTOM = "slider_mode_bottom";
+    private static final String TAG = DeviceSettings.class.getSimpleName();
+    private static final boolean DEBUG = true;
+    public static final String KEY_MDNIE_SCENARIO = "mdnie_senario";
     private static final String KEY_SWAP_BACK_RECENTS = "swap_back_recents";
-    private static final String KEY_CATEGORY_GRAPHICS = "graphics";
+    private static final String KEY_HOMEBUTTON_SWITCH = "homebutton_switch";
 
-    public static final String KEY_SRGB_SWITCH = "srgb";
-    public static final String KEY_HBM_SWITCH = "hbm";
-    public static final String KEY_PROXI_SWITCH = "proxi";
-    public static final String KEY_DCI_SWITCH = "dci";
-    public static final String KEY_NIGHT_SWITCH = "night";
-
-    public static final String SLIDER_DEFAULT_VALUE = "4,2,0";
-
-    private VibratorStrengthPreference mVibratorStrength;
-    private ListPreference mSliderModeTop;
-    private ListPreference mSliderModeCenter;
-    private ListPreference mSliderModeBottom;
+    private ListPreference mMdnieSenario;
     private TwoStatePreference mSwapBackRecents;
-    private static TwoStatePreference mSRGBModeSwitch;
-    private static TwoStatePreference mHBMModeSwitch;
-    private static TwoStatePreference mDCIModeSwitch;
-    private static TwoStatePreference mNightModeSwitch;
+    private TwoStatePreference mHomeButtonSwitch;
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.main, rootKey);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mVibratorStrength = (VibratorStrengthPreference) findPreference(KEY_VIBSTRENGTH);
-        if (mVibratorStrength != null) {
-            mVibratorStrength.setEnabled(VibratorStrengthPreference.isSupported());
-        }
+        addPreferencesFromResource(R.xml.main);
 
-        mSliderModeTop = (ListPreference) findPreference(KEY_SLIDER_MODE_TOP);
-        mSliderModeTop.setOnPreferenceChangeListener(this);
-        int sliderModeTop = getSliderAction(0);
-        int valueIndex = mSliderModeTop.findIndexOfValue(String.valueOf(sliderModeTop));
-        mSliderModeTop.setValueIndex(valueIndex);
-        mSliderModeTop.setSummary(mSliderModeTop.getEntries()[valueIndex]);
-
-        mSliderModeCenter = (ListPreference) findPreference(KEY_SLIDER_MODE_CENTER);
-        mSliderModeCenter.setOnPreferenceChangeListener(this);
-        int sliderModeCenter = getSliderAction(1);
-        valueIndex = mSliderModeCenter.findIndexOfValue(String.valueOf(sliderModeCenter));
-        mSliderModeCenter.setValueIndex(valueIndex);
-        mSliderModeCenter.setSummary(mSliderModeCenter.getEntries()[valueIndex]);
-
-        mSliderModeBottom = (ListPreference) findPreference(KEY_SLIDER_MODE_BOTTOM);
-        mSliderModeBottom.setOnPreferenceChangeListener(this);
-        int sliderModeBottom = getSliderAction(2);
-        valueIndex = mSliderModeBottom.findIndexOfValue(String.valueOf(sliderModeBottom));
-        mSliderModeBottom.setValueIndex(valueIndex);
-        mSliderModeBottom.setSummary(mSliderModeBottom.getEntries()[valueIndex]);
+        mMdnieSenario = (ListPreference) findPreference(KEY_MDNIE_SCENARIO);
+        mMdnieSenario.setEnabled(MDNIEScenario.isSupported());
+        mMdnieSenario.setValueIndex(Integer.valueOf(MDNIEScenario.getIndex(this)));
+        mMdnieSenario.setSummary(mMdnieSenario.getEntries()[Integer.parseInt(MDNIEScenario.getIndex(this))]);
+        mMdnieSenario.setOnPreferenceChangeListener(this);
 
         mSwapBackRecents = (TwoStatePreference) findPreference(KEY_SWAP_BACK_RECENTS);
-        mSwapBackRecents.setChecked(Settings.System.getInt(getContext().getContentResolver(),
+        mSwapBackRecents.setChecked(Settings.System.getInt(getContentResolver(),
                     Settings.System.BUTTON_SWAP_BACK_RECENTS, 0) != 0);
 
-        mSRGBModeSwitch = (TwoStatePreference) findPreference(KEY_SRGB_SWITCH);
-        mSRGBModeSwitch.setEnabled(SRGBModeSwitch.isSupported());
-        mSRGBModeSwitch.setChecked(SRGBModeSwitch.isCurrentlyEnabled(this.getContext()));
-        mSRGBModeSwitch.setOnPreferenceChangeListener(new SRGBModeSwitch());
-
-        mHBMModeSwitch = (TwoStatePreference) findPreference(KEY_HBM_SWITCH);
-        mHBMModeSwitch.setEnabled(HBMModeSwitch.isSupported());
-        mHBMModeSwitch.setChecked(HBMModeSwitch.isCurrentlyEnabled(this.getContext()));
-        mHBMModeSwitch.setOnPreferenceChangeListener(new HBMModeSwitch());
-
-        mDCIModeSwitch = (TwoStatePreference) findPreference(KEY_DCI_SWITCH);
-        mDCIModeSwitch.setEnabled(DCIModeSwitch.isSupported());
-        mDCIModeSwitch.setChecked(DCIModeSwitch.isCurrentlyEnabled(this.getContext()));
-        mDCIModeSwitch.setOnPreferenceChangeListener(new DCIModeSwitch());
-
-        mNightModeSwitch = (TwoStatePreference) findPreference(KEY_NIGHT_SWITCH);
-        mNightModeSwitch.setEnabled(NightModeSwitch.isSupported());
-        mNightModeSwitch.setChecked(NightModeSwitch.isCurrentlyEnabled(this.getContext()));
-        mNightModeSwitch.setOnPreferenceChangeListener(new NightModeSwitch());
+        mHomeButtonSwitch = (TwoStatePreference) findPreference(KEY_HOMEBUTTON_SWITCH);
+        mHomeButtonSwitch.setChecked(Settings.System.getInt(getContentResolver(),
+                    Settings.System.BUTTON_EXTRA_KEY_MAPPING, 0) != 0);
 
     }
 
     @Override
-    public boolean onPreferenceTreeClick(Preference preference) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            finish();
+            return true;
+        default:
+            break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == mSwapBackRecents) {
-            Settings.System.putInt(getContext().getContentResolver(),
+            Settings.System.putInt(getContentResolver(),
                     Settings.System.BUTTON_SWAP_BACK_RECENTS, mSwapBackRecents.isChecked() ? 1 : 0);
             return true;
         }
-        return super.onPreferenceTreeClick(preference);
+
+        if (preference == mHomeButtonSwitch) {
+            Settings.System.putInt(getContentResolver(),
+                    Settings.System.BUTTON_EXTRA_KEY_MAPPING, mHomeButtonSwitch.isChecked() ? 1 : 0);
+            return true;
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mSliderModeTop) {
+        if (DEBUG) Log.i(TAG, "onPreferenceChange called in DeviceSettings");
+        if (preference == mMdnieSenario) {
+            if (DEBUG) Log.i(TAG, "onPreferenceChange mMdnieSceanrio");
             String value = (String) newValue;
-            int sliderMode = Integer.valueOf(value);
-            setSliderAction(0, sliderMode);
-            int valueIndex = mSliderModeTop.findIndexOfValue(value);
-            mSliderModeTop.setSummary(mSliderModeTop.getEntries()[valueIndex]);
-        } else if (preference == mSliderModeCenter) {
-            String value = (String) newValue;
-            int sliderMode = Integer.valueOf(value);
-            setSliderAction(1, sliderMode);
-            int valueIndex = mSliderModeCenter.findIndexOfValue(value);
-            mSliderModeCenter.setSummary(mSliderModeCenter.getEntries()[valueIndex]);
-        } else if (preference == mSliderModeBottom) {
-            String value = (String) newValue;
-            int sliderMode = Integer.valueOf(value);
-            setSliderAction(2, sliderMode);
-            int valueIndex = mSliderModeBottom.findIndexOfValue(value);
-            mSliderModeBottom.setSummary(mSliderModeBottom.getEntries()[valueIndex]);
+            MDNIEScenario.setIndex(preference, newValue);
+            int valueIndex = mMdnieSenario.findIndexOfValue(value);
+            mMdnieSenario.setSummary(mMdnieSenario.getEntries()[valueIndex]);
+
         }
         return true;
-    }
-
-    private int getSliderAction(int position) {
-        String value = Settings.System.getString(getContext().getContentResolver(),
-                    Settings.System.BUTTON_EXTRA_KEY_MAPPING);
-        final String defaultValue = SLIDER_DEFAULT_VALUE;
-
-        if (value == null) {
-            value = defaultValue;
-        } else if (value.indexOf(",") == -1) {
-            value = defaultValue;
-        }
-        try {
-            String[] parts = value.split(",");
-            return Integer.valueOf(parts[position]);
-        } catch (Exception e) {
-        }
-        return 0;
-    }
-
-    private void setSliderAction(int position, int action) {
-        String value = Settings.System.getString(getContext().getContentResolver(),
-                    Settings.System.BUTTON_EXTRA_KEY_MAPPING);
-        final String defaultValue = SLIDER_DEFAULT_VALUE;
-
-        if (value == null) {
-            value = defaultValue;
-        } else if (value.indexOf(",") == -1) {
-            value = defaultValue;
-        }
-        try {
-            String[] parts = value.split(",");
-            parts[position] = String.valueOf(action);
-            String newValue = TextUtils.join(",", parts);
-            Settings.System.putString(getContext().getContentResolver(),
-                    Settings.System.BUTTON_EXTRA_KEY_MAPPING, newValue);
-        } catch (Exception e) {
-        }
-    }
-
-    protected static void disableOtherModes(String mode, boolean enabled) {
-        if (mode == KEY_DCI_SWITCH) {
-            if (enabled == true) {
-                mSRGBModeSwitch.setChecked(!enabled);
-            }
-        }
-
-        if (mode == KEY_SRGB_SWITCH) {
-            if (enabled == true) {
-                mDCIModeSwitch.setChecked(!enabled);
-            }
-        }
-
-        if (mode == KEY_HBM_SWITCH) {
-            if (enabled == true) {
-                mNightModeSwitch.setChecked(!enabled);
-            }
-        }
-
-        if (mode == KEY_NIGHT_SWITCH) {
-            if (enabled == true) {
-                mHBMModeSwitch.setChecked(!enabled);
-            }
-        }
     }
 }

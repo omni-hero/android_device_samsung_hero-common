@@ -89,7 +89,7 @@ PRODUCT_PACKAGES += \
 	SamsungServiceMode \
 	Torch \
     DeviceParts \
-	HeroParts \
+    SamsungDoze \
     textclassifier.smartselection.bundle1
 
 # Filesystem tools for resizing system partition filesystem
