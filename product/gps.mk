@@ -12,6 +12,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	libsensoreventq
 
+PRODUCT_PACKAGES += \
+	libsensor_shim
+
 # HIDL
 PRODUCT_PACKAGES += \
 	android.hardware.gnss@1.0-impl \

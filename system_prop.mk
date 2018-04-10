@@ -50,6 +50,14 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.telephony.mms_data_profile=5 \
 	persist.media.treble_omx=false
 
+PRODUCT_PROPERTY_OVERRIDES += \
+    debug.hwc.force_gpu=0 \
+    debug.hwc.max_hw_overlays=5 \
+    debug.egl.hw=1 \
+    debug.sf.enable_hwc_vds=1 \
+    debug.sf.hw=1 \
+    persist.sys.ui.hw=true
+
 # sdcardfs
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sys.sdcardfs=false
